@@ -157,6 +157,7 @@ LOGO_TARGET_PATH = None
 DRUID_IS_ACTIVE = True
 DRUID_TZ = tz.tzutc()
 DRUID_ANALYSIS_TYPES = ["cardinality"]
+DRUID_HTTP_HEADERS = {}
 
 # ----------------------------------------------------
 # AUTHENTICATION CONFIG

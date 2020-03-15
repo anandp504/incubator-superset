@@ -83,6 +83,7 @@ except ImportError:
     pass
 
 DRUID_TZ = conf.get("DRUID_TZ")
+DRUID_HTTP_HEADERS = conf.get("DRUID_HTTP_HEADERS")
 POST_AGG_TYPE = "postagg"
 metadata = Model.metadata  # pylint: disable=no-member
 
@@ -173,6 +174,10 @@ class DruidCluster(Model, AuditMixinNullable, ImportMixin):
         )
         if self.broker_user and self.broker_pass:
             cli.set_basic_auth_credentials(self.broker_user, self.broker_pass)
+
+        if DRUID_HTTP_HEADERS:
+            cli.set_http_headers(DRUID_HTTP_HEADERS)
+
         return cli
 
     def get_datasources(self) -> List[str]:
