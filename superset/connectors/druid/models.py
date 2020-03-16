@@ -177,13 +177,15 @@ class DruidCluster(Model, AuditMixinNullable, ImportMixin):
             cli.set_basic_auth_credentials(self.broker_user, self.broker_pass)
 
         if DRUID_HTTP_HEADERS:
-            print(DRUID_HTTP_HEADERS)
             cli.set_http_headers(DRUID_HTTP_HEADERS)
 
         return cli
 
     def get_datasources(self) -> List[str]:
-        endpoint = self.get_base_broker_url() + "/datasources"
+        if DRUID_BASE_URL:
+            endpoint = DRUID_BASE_URL + "/druid/v2/datasources"
+        else:
+            endpoint = self.get_base_broker_url() + "/datasources"
         auth = requests.auth.HTTPBasicAuth(self.broker_user, self.broker_pass)
         return json.loads(requests.get(endpoint, auth=auth, headers=DRUID_HTTP_HEADERS).text)
 
