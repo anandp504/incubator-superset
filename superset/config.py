@@ -158,6 +158,7 @@ DRUID_IS_ACTIVE = True
 DRUID_TZ = tz.tzutc()
 DRUID_ANALYSIS_TYPES = ["cardinality"]
 DRUID_HTTP_HEADERS = {}
+DRUID_BASE_URL = None
 
 # ----------------------------------------------------
 # AUTHENTICATION CONFIG

@@ -84,6 +84,7 @@ except ImportError:
 
 DRUID_TZ = conf.get("DRUID_TZ")
 DRUID_HTTP_HEADERS = conf.get("DRUID_HTTP_HEADERS")
+DRUID_BASE_URL = conf.get("DRUID_BASE_URL")
 POST_AGG_TYPE = "postagg"
 metadata = Model.metadata  # pylint: disable=no-member
 
@@ -176,6 +177,7 @@ class DruidCluster(Model, AuditMixinNullable, ImportMixin):
             cli.set_basic_auth_credentials(self.broker_user, self.broker_pass)
 
         if DRUID_HTTP_HEADERS:
+            print(DRUID_HTTP_HEADERS)
             cli.set_http_headers(DRUID_HTTP_HEADERS)
 
         return cli
@@ -183,10 +185,14 @@ class DruidCluster(Model, AuditMixinNullable, ImportMixin):
     def get_datasources(self) -> List[str]:
         endpoint = self.get_base_broker_url() + "/datasources"
         auth = requests.auth.HTTPBasicAuth(self.broker_user, self.broker_pass)
-        return json.loads(requests.get(endpoint, auth=auth).text)
+        return json.loads(requests.get(endpoint, auth=auth, headers=DRUID_HTTP_HEADERS).text)
 
     def get_druid_version(self) -> str:
-        endpoint = self.get_base_url(self.broker_host, self.broker_port) + "/status"
+        # endpoint = self.get_base_url(self.broker_host, self.broker_port) + "/status"
+        if DRUID_BASE_URL:
+            endpoint = DRUID_BASE_URL + "/status"
+        else:
+            endpoint = self.get_base_url(self.broker_host, self.broker_port) + "/status"
         auth = requests.auth.HTTPBasicAuth(self.broker_user, self.broker_pass)
         return json.loads(requests.get(endpoint, auth=auth).text)["version"]
 
